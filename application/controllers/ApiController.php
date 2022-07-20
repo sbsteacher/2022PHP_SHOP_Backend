@@ -41,13 +41,32 @@ class ApiController extends Controller {
         $image_type = $image_type_aux[1];      
         $image_base64 = base64_decode($image_parts[1]);
         $dirPath = _IMG_PATH . "/" . $productId . "/" . $type;
-        $filePath = $dirPath . "/" . uniqid() . "." . $image_type;
+        $fileNm = uniqid() . "." . $image_type;
+        $filePath = $dirPath . "/" . $fileNm;
         if(!is_dir($dirPath)) {
             mkdir($dirPath, 0777, true);
+        }        
+        $result = file_put_contents($filePath, $image_base64);
+        if($result) {
+            $param = [
+                "product_id" => $productId,
+                "type" => $type,
+                "path" => $fileNm
+            ];
+            $this->model->productImageInsert($param);
         }
-        //$file = _IMG_PATH . "/" . $productId . "/" . $type . "/" . uniqid() . "." . $image_type;
-        //$file = "static/" . uniqid() . "." . $image_type;
-        $result = file_put_contents($filePath, $image_base64); 
-        return [_RESULT => 1];
+        return [_RESULT => $result ? 1 : 0];
+    }
+
+    public function productImageList() {
+        $urlPaths = getUrlPaths();
+        if(!isset($urlPaths[2])) {
+            exit();
+        }
+        $productId = intval($urlPaths[2]);
+        $param = [
+            "product_id" => $productId
+        ];
+        return $this->model->productImageList($param);
     }
 }
