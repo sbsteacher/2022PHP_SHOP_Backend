@@ -21,6 +21,8 @@ function gen_uuid_v4() {
 }
 
 function rmdirAll($delete_path) {
+    if(!is_dir($delete_path)) { return; }
+
 	$dirs = dir($delete_path);
 
 	while(false !== ($entry = $dirs->read())) {		

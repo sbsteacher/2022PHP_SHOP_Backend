@@ -1,6 +1,8 @@
 <?php
 namespace application\controllers;
 
+use Exception;
+
 class ApiController extends Controller {
     public function categoryList() {
         return $this->model->getCategoryList();
@@ -102,6 +104,7 @@ class ApiController extends Controller {
         }
         $productId = intval($urlPaths[2]);
         
+        
         try {
             $param = [
                 "product_id" => $productId
@@ -111,14 +114,13 @@ class ApiController extends Controller {
             $result = $this->model->productDelete($param);
             if($result === 1) {
                 //이미지 삭제
-                rmdirAll(_IMG_PATH . "/" . $productId);    
+                rmdirAll(_IMG_PATH . "/" . $productId);
+
                 $this->model->commit();
             } else {
                 $this->model->rollback();    
             }
-        } catch(Exception $e) {
-            print "에러발생<br>";
-            print $e . "<br>";
+        } catch(Exception $e) {            
             $this->model->rollback();
         }    
         
