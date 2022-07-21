@@ -94,4 +94,16 @@ class ApiController extends Controller {
 
         return [_RESULT => $result];
     }
+
+    public function deleteProduct() {
+        $urlPaths = getUrlPaths();
+        if(count($urlPaths) !== 3) {
+            exit();
+        }
+        $productId = intval($urlPaths[2]);
+        //이미지 삭제
+
+        rmdirAll(_IMG_PATH . "/" . $productId);
+        return [_RESULT => 1];
+    }
 }
