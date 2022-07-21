@@ -91,9 +91,22 @@ class ApiModel extends Model {
     }
 
     public function productImageDelete(&$param) {
-        $sql = "DELETE FROM t_product_img WHERE id = :product_image_id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":product_image_id", $param["product_image_id"]);
+        $sql = "DELETE FROM t_product_img WHERE ";
+        if(array_key_exists("product_image_id", $param)) {
+            $sql .= "id = " . $param["product_image_id"];
+
+        } else if (array_key_exists("product_id", $param)) {
+            $sql .= "product_id = " . $param["product_id"];
+        }        
+        $stmt = $this->pdo->prepare($sql);        
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    public function productDelete(&$param) {
+        $sql = "DELETE FROM t_product WHERE id = :product_id";
+        $stmt = $this->pdo->prepare($sql);        
+        $stmt->bindValue(":product_id", $param["product_id"]);
         $stmt->execute();
         return $stmt->rowCount();
     }
